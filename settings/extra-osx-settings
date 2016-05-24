@@ -1,0 +1,508 @@
+#!/bin/sh
+# extra-osx-settings
+
+####= SuitAndCape Extra OS X Settings File
+##============================================================================##
+
+## Extra OS X settings scripts
+
+echo "Beginning extra OS X setup"
+
+## Require the administrator password
+sudo -v
+
+## Keep updating `sudo` timestamp until `extra-osx-settings` has finished
+while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+
+echo "NOTE: If the English system voices \"Karen\" (Australia) and \"Moira\" (Ireland) are not installed, please install them or remove that step from the Miscellany section, before running this setup process"
+
+##== Miscellany ===============================================================#
+
+echo "Adjusting Miscellaneous OS X settings"
+
+## Create a directory for torrents
+mkdir -p "${TORRENTS_DIR}"
+
+## Create a directory for torrent imports
+mkdir -p "${TORRENTS_IMPORT_DIR}"
+
+## Create then hide a directory for incomplete torrent downloads
+mkdir -p "${TORRENTS_INCOMP_DIR}"
+chflags -h hidden "${TORRENTS_INCOMP_DIR}"
+
+## Set double and single quotations to "straight quotes"
+# defaults write NSGlobalDomain NSUserQuotesArray -array "${QUOTATION_KEY}" "${QUOTATION_KEY}" "${APOSTROPHE_KEY}" "${APOSTROPHE_KEY}"
+
+## NOTE: Install English voices "Karen" (Australia) and "Moira" (Ireland) first
+## Make the System Voice speak Semi-Fast (range: 90=Slow–350=Fast) as...
+  ## Karen
+# defaults write com.apple.speech.voice.prefs SelectedVoiceCreator -int 1886745202
+# defaults write com.apple.speech.voice.prefs SelectedVoiceID -int 100827421
+# defaults write com.apple.speech.voice.prefs SelectedVoiceName -string "Karen"
+# $PLISTBUDDY -x \
+#   -c "Delete :VoiceRateDataArray" \
+#   -c "Add :VoiceRateDataArray array" \
+#   -c "Add :VoiceRateDataArray:0 array" \
+#   -c "Add :VoiceRateDataArray:0:0 integer 1886745202" \
+#   -c "Add :VoiceRateDataArray:0:1 integer 100827421" \
+#   -c "Add :VoiceRateDataArray:0:2 integer 225" \
+#   "${HOME}"/Library/Preferences/com.apple.speech.voice.prefs.plist
+  ## Moira
+defaults write com.apple.speech.voice.prefs SelectedVoiceCreator -int 1886745202
+defaults write com.apple.speech.voice.prefs SelectedVoiceID -int 117644429
+defaults write com.apple.speech.voice.prefs SelectedVoiceName -string "Moira"
+$PLISTBUDDY -x \
+  -c "Delete :VoiceRateDataArray" \
+  -c "Add :VoiceRateDataArray array" \
+  -c "Add :VoiceRateDataArray:0 array" \
+  -c "Add :VoiceRateDataArray:0:0 integer 1886745202" \
+  -c "Add :VoiceRateDataArray:0:1 integer 117644429" \
+  -c "Add :VoiceRateDataArray:0:2 integer 225" \
+  "${HOME}"/Library/Preferences/com.apple.speech.voice.prefs.plist
+
+##== ColorSnapper1 ============================================================#
+
+echo "Adjusting ColorSnapper1 settings"
+
+## Set ColorSnapper1's main hotkey to...
+  ## `[⌃]+[⌘]+[C]` (include `[⌥]` for alternative format)
+# defaults write com.koolesache.ColorSnapper ColorSnapperShortCut -dict keyCode -int 8 modifiers -int 4352
+  ## `[⌃]+[⇧]+[⌘]+[C]` (include `[⌥]` for alternative format)
+defaults write com.koolesache.ColorSnapper ColorSnapperShortCut -dict keyCode -int 8 modifiers -int 4864
+
+## Enable text overlay in ColorSnapper
+defaults write com.koolesache.ColorSnapper colorFormatInOverlay -bool true
+
+## Enable picked color appearing in ColorSnapper1 menu bar icon
+defaults write com.koolesache.ColorSnapper colorInMenuBar -bool true
+
+## Set the recently picked dropdown limit to thirty five colors in ColorSnapper1
+defaults write com.koolesache.ColorSnapper historyLength -int 35
+
+## ColorSnapper1 Text overlay "Display color as" format values:
+  ## 0: RGB (255,255,255)
+  ## 1: HEX #RRGGBB
+  ## 2: HSL (360°,100%,100%)
+
+## ColorSnapper1 Text overlay "Display color as" format => RGB (255,255,255)
+defaults write com.koolesache.ColorSnapper overlayColorFormat -int 0
+
+## ColorSnapper1 clipboard picked color format values:
+  ## 1:  CSS #ffffff
+  ## 2:  CSS #FFFFFF
+  ## 3:  CSS3 rgb(255,255,255)
+  ## 4:  CSS3 rgba(255,255,255,1)
+  ## 5:  CSS3 hsl(360,100%,50%)
+  ## 6:  CSS3 hsla(360,100%,50%,1)
+  ## 7:  ObjC NSColor RGB calibrated
+  ## 8:  ObjC NSColor HSB calibrated
+  ## 9:  ObjC UIColor RGB
+  ## 10: ObjC UIColor HSB
+  ## 11: HEX FFFFFF
+  ## 12: HEX 0xFFFFFF
+  ## 13: RGB 255,255,255
+  ## 14: HSL 255,100%,50%
+  ## 15: ObjC NSColor sRGB
+  ## 16: Swift NSColor RGB
+  ## 17: Swift NSColor HSB
+  ## 18: Swift UIColor RGB
+  ## 19: Swift UIColor HSB
+
+## ColorSnapper1 Primary clipboard color format => CSS3 rgba(255,255,255,1)
+defaults write com.koolesache.ColorSnapper primaryColorFormat -int 4
+
+## ColorSnapper1 Alternative clipboard color format => HEX FFFFFF
+defaults write com.koolesache.ColorSnapper secondaryColorFormat -int 11
+
+## Enable picked color notification in ColorSnapper1
+defaults write com.koolesache.ColorSnapper useNotificationCenter -bool true
+
+## Set the ColorSnapper1 magnification size to Semi-Large
+## (range: 2=Small–11=Large)
+defaults write com.koolesache.ColorSnapper zoomFactor -int 7
+
+## Kill ColorSnapper1
+appkillinator "ColorSnapper"
+
+##== ColorSnapper2 ============================================================#
+
+echo "Adjusting ColorSnapper2 settings"
+
+## Check for ColorSnapper2 software updates automatically
+# defaults write com.koolesache.ColorSnapper2 SUEnableAutomaticChecks -bool true
+
+## Enable ColorSnapper2 menu bar icon
+defaults write com.koolesache.ColorSnapper2 showMenubarIcon -bool true
+
+## Kill ColorSnapper2
+appkillinator "ColorSnapper2"
+
+##== Kaleidoscope =============================================================#
+
+echo "Adjusting Kaleidoscope settings"
+
+## Kaleidoscope color values:
+  ## 040b73747265616d747970656481e803840140848484074e53436f6c6f72008484084e534f626a6563740085840163028404666666660101010186
+    ##: White
+  ## 040b73747265616d747970656481e803840140848484074e53436f6c6f72008484084e534f626a65637400858401630284046666666683d2d1513f83d2d1513f83d2d1513f0186
+    ##: Grey
+  ## 040b73747265616d747970656481e803840140848484074e53436f6c6f72008484084e534f626a6563740085840163028404666666660000000186
+    ##: Black
+  ## 040b73747265616d747970656481e803840140848484074e53436f6c6f72008484084e534f626a65637400858401630284046666666683c2c1413f83dedd5d3f010186
+    ##: Blue
+  ## 040b73747265616d747970656481e803840140848484074e53436f6c6f72008484084e534f626a65637400858401630284046666666683fffe7e3f83c3c2423f83c3c2423f0186
+    ##: Red
+  ## 040b73747265616d747970656481e803840140848484074e53436f6c6f72008484084e534f626a65637400858401630284046666666683cecd4d3f83f8f7773f83a3a2223f0186
+    ##: Green
+  ## 040b73747265616d747970656481e803840140848484074e53436f6c6f72008484084e534f626a65637400858401630284046666666683eeed6d3f83c9c8483f010186
+    ##: Pink
+  ## 040b73747265616d747970656481e803840140848484074e53436f6c6f72008484084e534f626a65637400858401630184046666666683c9c8c83d83c9c8c83d83c9c8c83d0186
+    ##: Lead (custom)
+  ## 040b73747265616d747970656481e803840140848484074e53436f6c6f72008484084e534f626a65637400858401630184046666666683cdcc4c3e83cdcc4c3e83cdcc4c3e0186
+    ##: Tungsten (custom)
+  ## 040b73747265616d747970656481e803840140848484074e53436f6c6f72008484084e534f626a65637400858401630184046666666683cdcc4c3f83cdcc4c3f83cdcc4c3f0186
+    ##: Silver (custom)
+  ## 040b73747265616d747970656481e803840140848484074e53436f6c6f72008484084e534f626a65637400858401630184046666666683e7e6663f83e7e6663f83e7e6663f0186
+    ##: Mercury (custom)
+
+## Kaleidoscope Difference Coloring for Different regions color => ...
+  ## Lead (custom)
+defaults write com.blackpixel.kaleidoscope KSImageScopeDifferenceMaskDifferenceHighlightColor -data 040b73747265616d747970656481e803840140848484074e53436f6c6f72008484084e534f626a65637400858401630184046666666683c9c8c83d83c9c8c83d83c9c8c83d0186
+  ## Black/default
+# defaults delete com.blackpixel.kaleidoscope KSImageScopeDifferenceMaskDifferenceHighlightColor
+
+## Kaleidoscope Difference Coloring for Same regions color => ...
+  ## Mercury (custom)
+defaults write com.blackpixel.kaleidoscope KSImageScopeDifferenceMaskSameHighlightColor -data 040b73747265616d747970656481e803840140848484074e53436f6c6f72008484084e534f626a65637400858401630184046666666683e7e6663f83e7e6663f83e7e6663f0186
+  ## White/default
+# defaults delete com.blackpixel.kaleidoscope KSImageScopeDifferenceMaskSameHighlightColor
+
+## Kaleidoscope Transparency Rendition Solid color => ...
+  ## Pink
+defaults write com.blackpixel.kaleidoscope KSImageScopeTransparencySolidColor -data 040b73747265616d747970656481e803840140848484074e53436f6c6f72008484084e534f626a65637400858401630284046666666683eeed6d3f83c9c8483f010186
+  ## Grey/default
+# defaults delete com.blackpixel.kaleidoscope KSImageScopeTransparencySolidColor
+
+## Kaleidoscope Transparency Rendition Checker Pattern color => ...
+  ## Pink
+defaults write com.blackpixel.kaleidoscope KSImageScopeTransparencyPrimaryCheckerColor -data 040b73747265616d747970656481e803840140848484074e53436f6c6f72008484084e534f626a65637400858401630284046666666683eeed6d3f83c9c8483f010186
+  ## Grey/default
+# defaults delete com.blackpixel.kaleidoscope KSImageScopeTransparencyPrimaryCheckerColor
+
+## Scan hidden files in Kaleidoscope
+defaults write com.blackpixel.kaleidoscope KSFileSystemItemRepScanHiddenFilesKey -bool true
+
+## Do not ignore differences in whitespace in Kaleidoscope
+defaults write com.blackpixel.kaleidoscope KSIgnoreWhitespaceUserDefaultsKey -bool false
+
+## Set Difference Rendition to Absolute in Kaleidoscope
+## (alternative: 1=Proportional)
+defaults write com.blackpixel.kaleidoscope KSImageScopeDifferenceMaskType -int 0
+
+## Show summary before copying in Kaleidoscope
+defaults write com.blackpixel.kaleidoscope KSFolderScopeShowCopyFilesConfirmationUserDefaultsKey -bool true
+
+## Set Image Navigator to Show Automatically in Kaleidoscope
+## (alternative: false=Never Show)
+defaults write com.blackpixel.kaleidoscope KSImageScopeAutoShowNavigator -bool true
+
+## Set Transparency Rendition to Checker Pattern size to Medium in Kaleidoscope
+## (alternatives: 0=Small|1=Medium|2=Large)
+defaults write com.blackpixel.kaleidoscope KSImageScopeTransparencyCheckerSize -int 1
+
+## Set Transparency Rendition to Checker Pattern in Kaleidoscope
+## (alternative: true=Solid Color)
+defaults write com.blackpixel.kaleidoscope KSImageScopeTransparencyRendition -bool false
+
+## Set the Kaleidoscope font size to sixteen points
+defaults write com.blackpixel.kaleidoscope KSTextScopeFontInfoUserDefaultsKey -dict-add "fontSize" -int 16
+
+## Set the Kaleidoscope font to Inconsolata
+## NOTE: Install the Google Font "Inconsolata" before using this method
+defaults write com.blackpixel.kaleidoscope KSTextScopeFontInfoUserDefaultsKey -dict-add "fontName" -string "Inconsolata-Regular"
+
+## Set the Difference Coloring to Multicolored in Kaleidoscope
+## (alternative: 1=Single Color)
+defaults write com.blackpixel.kaleidoscope KSTextScopeThemeTagUserDefaultsKey -int 0
+
+## Set the Background Color to Light in Kaleidoscope
+## (alternative: 1=Dark)
+defaults write com.blackpixel.kaleidoscope KSTextScopeThemeTextStyleTagUserDefaultsKey -int 0
+
+## Wrap long lines in new comparisons in Kaleidoscope
+defaults write com.blackpixel.kaleidoscope SFTextViewLineWrapsUserDefaultsKey -bool true
+
+## Check for Kaleidoscope software updates automatically
+# defaults write com.blackpixel.kaleidoscope SUEnableAutomaticChecks -bool true
+
+## Do not send anonymous system profile in Kaleidoscope
+defaults write com.blackpixel.kaleidoscope SUSendProfileInfo -bool false
+
+## Kill Kaleidoscope
+appkillinator "Kaleidoscope"
+
+##== SizeUp ===================================================================#
+
+# echo "Adjusting SizeUp settings"
+
+## Launch SizeUp at login
+# defaults write com.irradiatedsoftware.SizeUp StartAtLogin -bool true
+
+## Do not open the preferences window when launching SizeUp
+# defaults write com.irradiatedsoftware.SizeUp ShowPrefsOnNextStart -bool false
+
+## Kill SizeUp
+# appkillinator "SizeUp"
+
+##== Spectacle ================================================================#
+
+echo "Adjusting Spectacle settings"
+
+## NOTE: `MoveToBottomDisplay`, `MoveToLeftDisplay`, `MoveToRightDisplay`, and
+#`MoveToTopDisplay` have been deprecated
+
+## Use `[⌃]+[⌥]+[⌘]+[+]` to make window larger via Spectacle
+defaults write com.divisiblebyzero.Spectacle MakeLarger -data 62706c6973743030d4010203040506191a582476657273696f6e58246f626a65637473592461726368697665725424746f7012000186a0a40708111255246e756c6cd4090a0b0c0d0e0f10596d6f64696669657273546e616d65576b6579436f64655624636c6173731119008002101880035a4d616b654c6172676572d2131415165a24636c6173736e616d655824636c61737365735f1011537065637461636c6553686f7274637574a217185f1011537065637461636c6553686f7274637574584e534f626a6563745f100f4e534b657965644172636869766572d11b1c54726f6f74800108111a232d32373c424b555a62696c6e70727d828d96aaadc1cadcdfe40000000000000101000000000000001d000000000000000000000000000000e6
+
+## Use `[⌃]+[⌥]+[⌘]+[-]` to make window smaller via Spectacle
+defaults write com.divisiblebyzero.Spectacle MakeSmaller -data 62706c6973743030d4010203040506191a582476657273696f6e58246f626a65637473592461726368697665725424746f7012000186a0a40708111255246e756c6cd4090a0b0c0d0e0f10596d6f64696669657273546e616d65576b6579436f64655624636c6173731119008002101b80035b4d616b65536d616c6c6572d2131415165a24636c6173736e616d655824636c61737365735f1011537065637461636c6553686f7274637574a217185f1011537065637461636c6553686f7274637574584e534f626a6563745f100f4e534b657965644172636869766572d11b1c54726f6f74800108111a232d32373c424b555a62696c6e70727e838e97abaec2cbdde0e50000000000000101000000000000001d000000000000000000000000000000e7
+
+## Use `[⌃]+[⌥]+[⌘]+[↓]` to move window to the bottom half via Spectacle
+defaults write com.divisiblebyzero.Spectacle MoveToBottomHalf -data 62706c6973743030d4010203040506191a582476657273696f6e58246f626a65637473592461726368697665725424746f7012000186a0a40708111255246e756c6cd4090a0b0c0d0e0f10596d6f64696669657273546e616d65576b6579436f64655624636c6173731119008002107d80035f10104d6f7665546f426f74746f6d48616c66d2131415165a24636c6173736e616d655824636c61737365735f1011537065637461636c6553686f7274637574a217185f1011537065637461636c6553686f7274637574584e534f626a6563745f100f4e534b657965644172636869766572d11b1c54726f6f74800108111a232d32373c424b555a62696c6e7072858a959eb2b5c9d2e4e7ec0000000000000101000000000000001d000000000000000000000000000000ee
+
+## Use `[⌃]+[⌥]+[⌘]+[C]` to move window to the center via Spectacle
+defaults write com.divisiblebyzero.Spectacle MoveToCenter -data 62706c6973743030d4010203040506191a582476657273696f6e58246f626a65637473592461726368697665725424746f7012000186a0a40708111255246e756c6cd4090a0b0c0d0e0f10596d6f64696669657273546e616d65576b6579436f64655624636c6173731119008002100880035c4d6f7665546f43656e746572d2131415165a24636c6173736e616d655824636c61737365735f1011537065637461636c6553686f7274637574a217185f1011537065637461636c6553686f7274637574584e534f626a6563745f100f4e534b657965644172636869766572d11b1c54726f6f74800108111a232d32373c424b555a62696c6e70727f848f98acafc3ccdee1e60000000000000101000000000000001d000000000000000000000000000000e8
+
+## Use `[⌃]+[⌥]+[⌘]+[F]` to fullscreen the window via Spectacle
+defaults write com.divisiblebyzero.Spectacle MoveToFullscreen -data 62706c6973743030d4010203040506191a582476657273696f6e58246f626a65637473592461726368697665725424746f7012000186a0a40708111255246e756c6cd4090a0b0c0d0e0f10596d6f64696669657273546e616d65576b6579436f64655624636c6173731119008002100380035f10104d6f7665546f46756c6c73637265656ed2131415165a24636c6173736e616d655824636c61737365735f1011537065637461636c6553686f7274637574a217185f1011537065637461636c6553686f7274637574584e534f626a6563745f100f4e534b657965644172636869766572d11b1c54726f6f74800108111a232d32373c424b555a62696c6e7072858a959eb2b5c9d2e4e7ec0000000000000101000000000000001d000000000000000000000000000000ee
+
+## Use `[⌃]+[⌥]+[⌘]+[←]` to move window to the left half via Spectacle
+defaults write com.divisiblebyzero.Spectacle MoveToLeftHalf -data 62706c6973743030d4010203040506191a582476657273696f6e58246f626a65637473592461726368697665725424746f7012000186a0a40708111255246e756c6cd4090a0b0c0d0e0f10596d6f64696669657273546e616d65576b6579436f64655624636c6173731119008002107b80035e4d6f7665546f4c65667448616c66d2131415165a24636c6173736e616d655824636c61737365735f1011537065637461636c6553686f7274637574a217185f1011537065637461636c6553686f7274637574584e534f626a6563745f100f4e534b657965644172636869766572d11b1c54726f6f74800108111a232d32373c424b555a62696c6e70728186919aaeb1c5cee0e3e80000000000000101000000000000001d000000000000000000000000000000ea
+
+## Use `[⌃]+[⌥]+[⌘]+[K]` to move window to the lower left via Spectacle
+defaults write com.divisiblebyzero.Spectacle MoveToLowerLeft -data 62706c6973743030d4010203040506191a582476657273696f6e58246f626a65637473592461726368697665725424746f7012000186a0a40708111255246e756c6cd4090a0b0c0d0e0f10596d6f64696669657273546e616d65576b6579436f64655624636c6173731119008002102880035f100f4d6f7665546f4c6f7765724c656674d2131415165a24636c6173736e616d655824636c61737365735f1011537065637461636c6553686f7274637574a217185f1011537065637461636c6553686f7274637574584e534f626a6563745f100f4e534b657965644172636869766572d11b1c54726f6f74800108111a232d32373c424b555a62696c6e70728489949db1b4c8d1e3e6eb0000000000000101000000000000001d000000000000000000000000000000ed
+
+## Use `[⌃]+[⌥]+[⌘]+[L]` to move window to the lower right via Spectacle
+defaults write com.divisiblebyzero.Spectacle MoveToLowerRight -data 62706c6973743030d4010203040506191a582476657273696f6e58246f626a65637473592461726368697665725424746f7012000186a0a40708111255246e756c6cd4090a0b0c0d0e0f10596d6f64696669657273546e616d65576b6579436f64655624636c6173731119008002102580035f10104d6f7665546f4c6f7765725269676874d2131415165a24636c6173736e616d655824636c61737365735f1011537065637461636c6553686f7274637574a217185f1011537065637461636c6553686f7274637574584e534f626a6563745f100f4e534b657965644172636869766572d11b1c54726f6f74800108111a232d32373c424b555a62696c6e7072858a959eb2b5c9d2e4e7ec0000000000000101000000000000001d000000000000000000000000000000ee
+
+## Use `[⌃]+[⌥]+[⌘]+[>]` to move window to the next display via Spectacle
+defaults write com.divisiblebyzero.Spectacle MoveToNextDisplay -data 62706c6973743030d4010203040506191a582476657273696f6e58246f626a65637473592461726368697665725424746f7012000186a0a40708111255246e756c6cd4090a0b0c0d0e0f10596d6f64696669657273546e616d65576b6579436f64655624636c6173731119008002102f80035f10114d6f7665546f4e657874446973706c6179d2131415165a24636c6173736e616d655824636c61737365735f1011537065637461636c6553686f7274637574a217185f1011537065637461636c6553686f7274637574584e534f626a6563745f100f4e534b657965644172636869766572d11b1c54726f6f74800108111a232d32373c424b555a62696c6e7072868b969fb3b6cad3e5e8ed0000000000000101000000000000001d000000000000000000000000000000ef
+
+## Use `[⌃]+[⌥]+[⌘]+[}]` to move window to the next third via Spectacle
+defaults write com.divisiblebyzero.Spectacle MoveToNextThird -data 62706c6973743030d4010203040506191a582476657273696f6e58246f626a65637473592461726368697665725424746f7012000186a0a40708111255246e756c6cd4090a0b0c0d0e0f10596d6f64696669657273546e616d65576b6579436f64655624636c6173731119008002101e80035f100f4d6f7665546f4e6578745468697264d2131415165a24636c6173736e616d655824636c61737365735f1011537065637461636c6553686f7274637574a217185f1011537065637461636c6553686f7274637574584e534f626a6563745f100f4e534b657965644172636869766572d11b1c54726f6f74800108111a232d32373c424b555a62696c6e70728489949db1b4c8d1e3e6eb0000000000000101000000000000001d000000000000000000000000000000ed
+
+## Use `[⌃]+[⌥]+[⌘]+[<]` to move window to the previous display via Spectacle
+defaults write com.divisiblebyzero.Spectacle MoveToPreviousDisplay -data 62706c6973743030d4010203040506191a582476657273696f6e58246f626a65637473592461726368697665725424746f7012000186a0a40708111255246e756c6cd4090a0b0c0d0e0f10596d6f64696669657273546e616d65576b6579436f64655624636c6173731119008002102b80035f10154d6f7665546f50726576696f7573446973706c6179d2131415165a24636c6173736e616d655824636c61737365735f1011537065637461636c6553686f7274637574a217185f1011537065637461636c6553686f7274637574584e534f626a6563745f100f4e534b657965644172636869766572d11b1c54726f6f74800108111a232d32373c424b555a62696c6e70728a8f9aa3b7baced7e9ecf10000000000000101000000000000001d000000000000000000000000000000f3
+
+## Use `[⌃]+[⌥]+[⌘]+[{]` to move window to the previous third via Spectacle
+defaults write com.divisiblebyzero.Spectacle MoveToPreviousThird -data 62706c6973743030d4010203040506191a582476657273696f6e58246f626a65637473592461726368697665725424746f7012000186a0a40708111255246e756c6cd4090a0b0c0d0e0f10596d6f64696669657273546e616d65576b6579436f64655624636c6173731119008002102180035f10134d6f7665546f50726576696f75735468697264d2131415165a24636c6173736e616d655824636c61737365735f1011537065637461636c6553686f7274637574a217185f1011537065637461636c6553686f7274637574584e534f626a6563745f100f4e534b657965644172636869766572d11b1c54726f6f74800108111a232d32373c424b555a62696c6e7072888d98a1b5b8ccd5e7eaef0000000000000101000000000000001d000000000000000000000000000000f1
+
+## Use `[⌃]+[⌥]+[⌘]+[→]` to move window to the right half via Spectacle
+defaults write com.divisiblebyzero.Spectacle MoveToRightHalf -data 62706c6973743030d4010203040506191a582476657273696f6e58246f626a65637473592461726368697665725424746f7012000186a0a40708111255246e756c6cd4090a0b0c0d0e0f10596d6f64696669657273546e616d65576b6579436f64655624636c6173731119008002107c80035f100f4d6f7665546f526967687448616c66d2131415165a24636c6173736e616d655824636c61737365735f1011537065637461636c6553686f7274637574a217185f1011537065637461636c6553686f7274637574584e534f626a6563745f100f4e534b657965644172636869766572d11b1c54726f6f74800108111a232d32373c424b555a62696c6e70728489949db1b4c8d1e3e6eb0000000000000101000000000000001d000000000000000000000000000000ed
+
+## Use `[⌃]+[⌥]+[⌘]+[↑]` to move window to the top half via Spectacle
+defaults write com.divisiblebyzero.Spectacle MoveToTopHalf -data 62706c6973743030d4010203040506191a582476657273696f6e58246f626a65637473592461726368697665725424746f7012000186a0a40708111255246e756c6cd4090a0b0c0d0e0f10596d6f64696669657273546e616d65576b6579436f64655624636c6173731119008002107e80035d4d6f7665546f546f7048616c66d2131415165a24636c6173736e616d655824636c61737365735f1011537065637461636c6553686f7274637574a217185f1011537065637461636c6553686f7274637574584e534f626a6563745f100f4e534b657965644172636869766572d11b1c54726f6f74800108111a232d32373c424b555a62696c6e707280859099adb0c4cddfe2e70000000000000101000000000000001d000000000000000000000000000000e9
+
+## Use `[⌃]+[⌥]+[⌘]+[I]` to move window to the upper left via Spectacle
+defaults write com.divisiblebyzero.Spectacle MoveToUpperLeft -data 62706c6973743030d4010203040506191a582476657273696f6e58246f626a65637473592461726368697665725424746f7012000186a0a40708111255246e756c6cd4090a0b0c0d0e0f10596d6f64696669657273546e616d65576b6579436f64655624636c6173731119008002102280035f100f4d6f7665546f55707065724c656674d2131415165a24636c6173736e616d655824636c61737365735f1011537065637461636c6553686f7274637574a217185f1011537065637461636c6553686f7274637574584e534f626a6563745f100f4e534b657965644172636869766572d11b1c54726f6f74800108111a232d32373c424b555a62696c6e70728489949db1b4c8d1e3e6eb0000000000000101000000000000001d000000000000000000000000000000ed
+
+## Use `[⌃]+[⌥]+[⌘]+[O]` to move window to the upper right via Spectacle
+defaults write com.divisiblebyzero.Spectacle MoveToUpperRight -data 62706c6973743030d4010203040506191a582476657273696f6e58246f626a65637473592461726368697665725424746f7012000186a0a40708111255246e756c6cd4090a0b0c0d0e0f10596d6f64696669657273546e616d65576b6579436f64655624636c6173731119008002101f80035f10104d6f7665546f55707065725269676874d2131415165a24636c6173736e616d655824636c61737365735f1011537065637461636c6553686f7274637574a217185f1011537065637461636c6553686f7274637574584e534f626a6563745f100f4e534b657965644172636869766572d11b1c54726f6f74800108111a232d32373c424b555a62696c6e7072858a959eb2b5c9d2e4e7ec0000000000000101000000000000001d000000000000000000000000000000ee
+
+## Use `[⌃]+[⌥]+[⇧]+[⌘]+[Z]` to redo the last window move via Spectacle
+defaults write com.divisiblebyzero.Spectacle RedoLastMove -data 62706c6973743030d4010203040506191a582476657273696f6e58246f626a65637473592461726368697665725424746f7012000186a0a40708111255246e756c6cd4090a0b0c0d0e0f10596d6f64696669657273546e616d65576b6579436f64655624636c617373111b008002100680035c5265646f4c6173744d6f7665d2131415165a24636c6173736e616d655824636c61737365735f1011537065637461636c6553686f7274637574a217185f1011537065637461636c6553686f7274637574584e534f626a6563745f100f4e534b657965644172636869766572d11b1c54726f6f74800108111a232d32373c424b555a62696c6e70727f848f98acafc3ccdee1e60000000000000101000000000000001d000000000000000000000000000000e8
+
+## Use `[⌃]+[⌥]+[⌘]+[Z]` to undo the last window move via Spectacle
+defaults write com.divisiblebyzero.Spectacle UndoLastMove -data 62706c6973743030d4010203040506191a582476657273696f6e58246f626a65637473592461726368697665725424746f7012000186a0a40708111255246e756c6cd4090a0b0c0d0e0f10596d6f64696669657273546e616d65576b6579436f64655624636c6173731119008002100680035c556e646f4c6173744d6f7665d2131415165a24636c6173736e616d655824636c61737365735f1011537065637461636c6553686f7274637574a217185f1011537065637461636c6553686f7274637574584e534f626a6563745f100f4e534b657965644172636869766572d11b1c54726f6f74800108111a232d32373c424b555a62696c6e70727f848f98acafc3ccdee1e60000000000000101000000000000001d000000000000000000000000000000e8
+
+## Kill Spectacle
+appkillinator "Spectacle"
+
+##== Spotify ==================================================================#
+
+echo "Adjusting Spotify settings"
+
+## Disable the OS X App Nap feature on Spotify
+defaults write com.spotify.client LSAppNapIsDisabled -bool true
+defaults write com.spotify.client NSAppSleepDisabled -bool true
+
+## Kill Spotify
+appkillinator "Spotify"
+
+##== Transmission =============================================================#
+
+echo "Adjusting Transmission settings"
+
+## Do not include beta releases when updating software in Transmission
+# defaults delete org.m0k.transmission AutoUpdateBeta
+
+## Enable Transmission's "total download rate" Dock icon badge
+# defaults delete org.m0k.transmission BadgeDownloadRate
+
+## Enable Transmission's "total upload rate" Dock icon badge
+# defaults delete org.m0k.transmission BadgeUploadRate
+
+## Check for Transmission software updates daily
+# defaults delete org.m0k.transmission SUEnableAutomaticChecks
+
+## Watch for Transmission torrents in the torrent import directory
+defaults write org.m0k.transmission AutoImport -bool true
+defaults write org.m0k.transmission AutoImportDirectory -string "${TORRENTS_IMPORT_DIR}"
+
+## Enable auto resize/automatically size window to fit all transfers
+defaults write org.m0k.transmission AutoSize -bool true
+
+## Prompt for quit with active transfers only when transfers are downloading
+defaults write org.m0k.transmission CheckQuitDownloading -bool true
+
+## Prompt for removal of active transfers only when transfers are downloading
+defaults write org.m0k.transmission CheckRemoveDownloading -bool true
+
+## Trash original torrent files after they are added in Transmission
+defaults write org.m0k.transmission DeleteOriginalTorrent -bool true
+
+## Enable availability progress bar in Transmission
+defaults write org.m0k.transmission DisplayProgressBarAvailable -bool true
+
+## Disable the pre-download confirmation dialog box in Transmission
+defaults write org.m0k.transmission DownloadAsk -bool false
+
+## Display a window when opening a torrent only when adding manually
+defaults write org.m0k.transmission DownloadAskManual -bool true
+
+## Display a window when opening a torrent only when there are multiple files
+defaults write org.m0k.transmission DownloadAskMulti -bool true
+
+## Save downloaded Transmission torrents in the torrents directory
+defaults write org.m0k.transmission DownloadChoice -string "Constant"
+defaults write org.m0k.transmission DownloadFolder -string "${TORRENTS_DIR}"
+defaults write org.m0k.transmission DownloadLocationConstant -bool true
+
+## Show filter bar in Transmission
+defaults write org.m0k.transmission FilterBar -bool true
+
+## Do not show pieces bar in Transmission
+defaults write org.m0k.transmission PiecesBar -bool false
+
+## Transmission completion sound values:
+  ## "Basso"
+  ## "Blow"
+  ## "Bottle"
+  ## "Frog"
+  ## "Funk"
+  ## "Glass"
+  ## "Hero"
+  ## "Morse"
+  ## "Ping"
+  ## "Pop"
+  ## "Purr"
+  ## "Sosumi"
+  ## "Submarine"
+  ## "Tink"
+
+## Transmission download complete sound => Pop
+# defaults write org.m0k.transmission PlayDownloadSound -bool true
+defaults write org.m0k.transmission DownloadSound -string "Pop"
+
+## Transmission seeding complete sound => Tink
+defaults write org.m0k.transmission PlaySeedingSound -bool true
+defaults write org.m0k.transmission SeedingSound -string "Tink"
+
+## Randomize port on launch in Transmission
+defaults write org.m0k.transmission RandomPort -bool true
+
+## Disable compact view in Transmission
+defaults write org.m0k.transmission SmallView -bool false
+
+## Show status bar in Transmission
+defaults write org.m0k.transmission StatusBar -bool true
+## Create a directory for incomplete torrent downloads, then hide it
+
+## Save incomplete Transmission downloads in the incomplete torrents directory
+defaults write org.m0k.transmission UseIncompleteDownloadFolder -bool true
+defaults write org.m0k.transmission IncompleteDownloadFolder -string "${TORRENTS_INCOMP_DIR}"
+
+## Disable the Transmission donation startup dialog box
+defaults write org.m0k.transmission WarningDonate -bool false
+
+## Disable the Transmission legal disclaimer startup dialog box
+defaults write org.m0k.transmission WarningLegal -bool false
+
+## Kill Transmission
+appkillinator "Transmission"
+
+##== VLC ======================================================================#
+
+echo "Adjusting VLC shortcuts and settings"
+
+## Check for VLC software updates automatically
+# defaults write org.videolan.vlc SUEnableAutomaticChecks -bool true
+
+## Kill VLC
+appkillinator "VLC"
+
+##== Screen Savers ============================================================#
+
+echo "Adjusting screen saver settings"
+
+## iOS Lockscreen: Animated wallpaper
+defaults write "${HOME}"/Library/Preferences/ByHost/com.littleendian.iOS-Screen-Saver animated -bool true
+
+## iOS Lockscreen: Use the Higher Clock placement
+## (alternative: false=Deeper Clock)
+defaults write "${HOME}"/Library/Preferences/ByHost/com.littleendian.iOS-Screen-Saver clockplacement -bool true
+
+## iOS Lockscreen: Use White Text
+## (alternative: false=Black Text)
+defaults write "${HOME}"/Library/Preferences/ByHost/com.littleendian.iOS-Screen-Saver color -bool true
+
+## iOS Lockscreen: Date Format values:
+  ## 0: Monday, January 1
+  ## 1: Monday 1 January
+  ## 2: Monday, 1 January
+  ## 3: January, 1. Monday
+  ## 4: January 1. Monday
+  ## 5: January 1 Monday
+  ## 6: January1日Monday
+
+## iOS Lockscreen: Date Format => Monday, January 1
+defaults write "${HOME}"/Library/Preferences/ByHost/com.littleendian.iOS-Screen-Saver dateformat -int 0
+
+## iOS Lockscreen Use the Full Username
+## (alternative: false=Short)
+defaults write "${HOME}"/Library/Preferences/ByHost/com.littleendian.iOS-Screen-Saver fullname -bool true
+
+## iOS Lockscreen: High definition
+defaults write "${HOME}"/Library/Preferences/ByHost/com.littleendian.iOS-Screen-Saver hd -bool true
+
+## iOS Lockscreen: Use the Higher Menubar placement
+## (alternative: false=Deeper Menubar)
+defaults write "${HOME}"/Library/Preferences/ByHost/com.littleendian.iOS-Screen-Saver menubarplacement -bool true
+
+## iOS Lockscreen: Menubar Size values:
+  ## 0: 1
+  ## 1: 2
+  ## 2: 3
+  ## 3: 4
+  ## 4: 5
+  ## 5: 6
+  ## 6: 7
+  ## 7: 8
+
+## iOS Lockscreen: Menubar Size => 5
+defaults write "${HOME}"/Library/Preferences/ByHost/com.littleendian.iOS-Screen-Saver menubarsize -int 4
+
+## iOS Lockscreen: Use the 24 hour Clock Format
+## (alternative: true=12 hour)
+defaults write "${HOME}"/Library/Preferences/ByHost/com.littleendian.iOS-Screen-Saver timeformat -bool false
+
+## iOS Lockscreen: Set the close action to Any Action
+## (alternative: true=Trackpad Slide)
+defaults write "${HOME}"/Library/Preferences/ByHost/com.littleendian.iOS-Screen-Saver unlockaction -bool false
+
+## iOS Lockscreen: Customize the Unlock String
+defaults write "${HOME}"/Library/Preferences/ByHost/com.littleendian.iOS-Screen-Saver unlockstring -string "press any key to unlock"
+
+## iOS Lockscreen: Do Not Include the Unlock String chevron
+## (alternative: true=Include)
+defaults write "${HOME}"/Library/Preferences/ByHost/com.littleendian.iOS-Screen-Saver usechevron -bool false

@@ -1,0 +1,57 @@
+#!/bin/sh
+# setup-helpers
+
+####= SuitAndCape Setup Helpers
+##============================================================================##
+
+## Helper shell functions, variables, etc. for the PartySuit setup process
+
+##== Function Helpers =========================================================#
+
+## Sources files in an efficient manner
+sourceinator() {
+  declare -a file_group=("${!1}")
+  for file in "${file_group[@]}"; do
+    file="${2}${file}"
+    [ -r "$file" ] && [ -f "$file" ] && source "$file"
+  done;
+}
+
+## Kills (`killall`) applications silently
+appkillinator() {
+  for application in "$@"; do
+    killall "${application}" &> /dev/null
+  done
+}
+
+##== Variable Helpers =========================================================#
+
+## Keyboard mapping symbols
+APOSTROPHE_KEY="\\U0027"
+ARROW_DOWN_KEY="\\U2193"
+ARROW_LEFT_KEY="\\U2190"
+ARROW_RIGHT_KEY="\\U2192"
+ARROW_UP_KEY="\\U2191"
+BACKSLASH_KEY="\\U005c"
+COMMAND_KEY="@"
+CONTROL_KEY="^"
+DELETE_BACKWARD_KEY="\\U232b"
+DELETE_FORWARD_KEY="\\U2326"
+FORWARD_SLASH_KEY="\\U002f"
+OPTION_KEY="~"
+QUOTATION_KEY="\\U0022"
+RETURN_KEY="\\U21a9"
+SHIFT_KEY="$"
+TAB_KEY="\\U21e5"
+
+## PlistBuddy command
+PLISTBUDDY=/usr/libexec/PlistBuddy
+
+## Torrent downloads directory
+TORRENTS_DIR="${HOME}"/Downloads/Torrents
+
+## Torrent import directory
+TORRENTS_IMPORT_DIR="${TORRENTS_DIR}"/Import
+
+## Incomplete torrent downloads directory
+TORRENTS_INCOMP_DIR="${TORRENTS_DIR}"/Incomplete

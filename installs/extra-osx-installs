@@ -1,0 +1,49 @@
+#!/bin/sh
+# extra-osx-installs
+
+####= SuitAndCape Extra OS X Installation File
+##============================================================================##
+
+## Personalize OS X installation scripts here
+
+echo "Beginning extra OS X installations"
+
+## Require the administrator password
+sudo -v
+
+## Keep updating `sudo` timestamp until `extra-osx-installs` has finished
+while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+
+##== Homebrew Formulae ========================================================#
+
+extra_casks=(
+  ## Free Casks
+  arduino
+  blender
+  cactus
+  filezilla  ## VS. 'transmit' ##
+  # flux     ## "Automatically adjust brightness" causes to f.lux flicker
+  glueprint
+  ios-saver
+  sourcetree ## VS. 'tower' ##
+  spectacle  ## VS. 'sizeup' ##
+  spotify
+  steam
+  transmission
+  vlc
+  ## Paid Casks
+  # colorsnapper                      ### $08.95 ###
+  # dash                              ### $24.99 ###
+  # kaleidoscope                      ### $69.99 ###
+  # marked                            ### $09.99 ###
+  # screenflow                        ### $99.00 ###
+  # sizeup   ## VS. 'spectacle' ##    ### $12.99 ###
+  # sketch                            ### $99.00 ###
+  # things                            ### $49.99 ###
+  # tower    ## VS. 'sourcetree' ##   ### $69.00 ###
+  # transmit ## VS. 'filezilla' ##    ### $69.00 ###
+)
+
+## Install Homebrew Cask applications
+echo "Installing Casks (Homebrew maintained applications)"
+brew cask install "${extra_casks[@]}"
